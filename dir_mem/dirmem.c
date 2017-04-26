@@ -68,7 +68,6 @@ int main(int argc, char* argv[]) {
 			printf("Argument: relative or absoulte path to directory\n"); return -1;
 	}
 
-	free(dirname);
 	dirname = NULL;
 	return 0;
 }

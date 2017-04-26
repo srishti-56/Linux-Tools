@@ -46,7 +46,7 @@ int dirStat(char *dirn) {
 
 int main(int argc, char* argv[]) {
 	
-	if( argc -2 != 0) {
+	if( argc != 2 ) {
 		printf("Argument: relative or absolute path to directory\n");
 		return -1;
 	}
@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
 			if( ! dirStat(dirname) ) return -1;
 			break;
 		default: 
-			printf("Invalid argument entered"); return -1;
+			printf("Argument: relative or absoulte path to directory\n"); return -1;
 	}
 
 	free(dirname);

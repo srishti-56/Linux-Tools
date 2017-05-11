@@ -1,3 +1,10 @@
+/*
+	A command-line tool written for Linux / UNIX systems that serves as an alternative
+	to the 'du' command. 
+
+	- Anish Sujanani ( asi7296 )
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>

@@ -10,7 +10,7 @@ struct args {
 
 struct args* convBase(struct args*);
 struct args* decConv(struct args*);
-struct args* binConv(struct args*);
+void binConv(struct args*);
 struct args* hexadecConv(struct args*);
 struct args* octConv(struct args*);
 char* reverseString(char*);

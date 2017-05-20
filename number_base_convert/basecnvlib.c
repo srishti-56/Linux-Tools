@@ -5,16 +5,30 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
 
 struct args* convBase(struct args *arg_struct) {
 	if(!strcmp(arg_struct->bin, "decimal") || !strcmp(arg_struct->bin, "d"))
-		decConv(arg_struct);
-	else if(!strcmp(arg_struct->bin, "binary") || !strcmp(arg_struct->bin, "b"))
+		 decConv(arg_struct);
+	else if(!strcmp(arg_struct->bin, "binary") || !strcmp(arg_struct->bin, "b")) {
 		binConv(arg_struct);
-	else if(!strcmp(arg_struct->bin, "hexadecimal") || !strcmp(arg_struct->bin, "h"))
+		convBase(arg_struct);
+	}
+	else if(!strcmp(arg_struct->bin, "hexadecimal") || !strcmp(arg_struct->bin, "h")) {
 		hexadecConv(arg_struct);
-	else if(!strcmp(arg_struct->bin, "octal") || !strcmp(arg_struct->bin, "o"))
+		convBase(arg_struct);
+	}
+	else if(!strcmp(arg_struct->bin, "octal") || !strcmp(arg_struct->bin, "o")) {
 		octConv(arg_struct);
+		convBase(arg_struct);
+	}
+	else {
+		printf("\nBase conversion\nUsage:\n");
+		printf("-i: input base\n-o: output base\ninput number\n");
+		printf("Bases supported: decimal | d, binary | b, octal | o, hexadecimal | h\n");
+		printf("eg. basecnv -i decimal -o octal 10\n\n");
+		exit(-1);
+	}
 	
 	return arg_struct;
 }
@@ -26,7 +40,7 @@ struct args* decConv(struct args *arg_struct) {
 	// to binary
 	if(!strcmp(arg_struct->bout, "binary") || !strcmp(arg_struct->bout, "b")) {
 		int t = atoi( arg_struct->num_in );
-		
+		arg_struct->num_out = malloc(1);
 		if(t == 0) {
 			arg_struct->num_out = "0";
 			return arg_struct;
@@ -123,23 +137,46 @@ struct args* decConv(struct args *arg_struct) {
 
 
 // binary - convert to decimal
-struct args* binConv(struct args *arg_struct) {
+void binConv(struct args *arg_struct) {
 	// convert to decimal for input value num_in, then call decConv which will take decimal and convert
-	return arg_struct;
+	long long int t = atoi(arg_struct->num_in);
+	int i = 0;
+	long int dec_num_in = 0;
+
+	while(t != 0) {
+		int last_dig = t % 10;
+		dec_num_in += last_dig * pow(2, i++);
+		t /= 10;
+	}
+	arg_struct->num_in = (char *) malloc(sizeof(dec_num_in));
+	sprintf(arg_struct->num_in, "%ld", dec_num_in);
+	arg_struct->bin = "d";
+	
 }
 
 
 // hexadecimal - convert to decimal
 struct args* hexadecConv(struct args *arg_struct) {
-	// convert to hexadecimal for input value num_in, then call decConv which will take decimal and convert
-	return arg_struct;
+	arg_struct->bin = "d";	
 }
 
 
 // octal - convert to decimal
 struct args* octConv(struct args *arg_struct) {
 	// convert to octal for input value num_in, then call decConv which will take decimal and convert
-	return arg_struct;
+	int t = atoi(arg_struct->num_in);
+	int i = 0;
+	long int dec_num_in = 0;	
+	
+	while( t != 0 ) {
+			int last_dig = t % 10;
+			dec_num_in += last_dig * pow(8, i++);
+			t /= 10;
+	}
+
+	arg_struct->num_in = (char *) malloc(sizeof(dec_num_in));
+	sprintf(arg_struct->num_in, "%ld", dec_num_in);
+	arg_struct->bin = "d";
 }
 
 

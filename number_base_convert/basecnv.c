@@ -49,18 +49,33 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
+	// needed later for mem free
+	// calling octal/hex/binary input, functions change struct vals
+	// make a copy here to decide whether to free later 
+	char *bin_cpy = arg_struct.bin;
+
 	convBase(&arg_struct);
 
 	printf("\nbin: %s bout: %s num_in: %s, num_out: %s\n", arg_struct.bin, arg_struct.bout, arg_struct.num_in, arg_struct.num_out);
 
 
+	if(! strcmp(arg_struct.bout, "b") || ! strcmp(arg_struct.bout, "binary"))
+		free(arg_struct.num_out);
 	// octal required free
-	if(! strcmp(arg_struct.bout, "o") || strcmp(arg_struct.bout, "octal"))
+	if(! strcmp(arg_struct.bout, "o") || ! strcmp(arg_struct.bout, "octal"))
 		free(arg_struct.num_out);
 	// hexadecimal requires free
-	else if(!strcmp(arg_struct.bout, "h") || strcmp(arg_struct.bout, "hexadecimal"))
+	else if(!strcmp(arg_struct.bout, "h") || ! strcmp(arg_struct.bout, "hexadecimal"))
 		free(arg_struct.num_out);
 	// binary, similar bases, error input - do not free ( because no alloc )
 
+
+	// input base: octal, hex - need num_in freed
+	if(! strcmp(bin_cpy, "b") || ! strcmp(bin_cpy, "binary"))
+		free(arg_struct.num_in);
+	// octal required free
+	if(! strcmp(bin_cpy, "o") || ! strcmp(bin_cpy, "octal"))
+		free(arg_struct.num_in);
 	return 0;
 }
+

@@ -1,4 +1,6 @@
-gcc -g basecnv.c basecnvlib.c -o basecnv -Wall
+Currently: binary -> decimal: upto 1024 supported
+
+gcc -g basecnv.c basecnvlib.c -o basecnv -Wall -lm
 
 gdb ./basecnv
 break basecnvlib.h:71

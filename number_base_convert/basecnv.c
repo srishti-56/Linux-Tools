@@ -11,7 +11,7 @@ static const char *optstring = "i:numo:";
 void printHelp() {
 	printf("\nBase conversion\nUsage:\n");
 	printf("-i: input base\n-o: output base\ninput number\n");
-	printf("Bases supported: decimal, binary, octal, hexadecimal\n");
+	printf("Bases supported: decimal | d, binary | b, octal | o, hexadecimal | h\n");
 	printf("eg. basecnv -i decimal -o octal 10\n\n");
 }
 
@@ -43,8 +43,24 @@ int main(int argc, char *argv[]) {
 
 	printf("\nbin: %s bout: %s num_in: %s, num_out: %s\n", arg_struct.bin, arg_struct.bout, arg_struct.num_in, arg_struct.num_out);
 
+	if( !strcmp(arg_struct.bin, arg_struct.bout) ) {
+		arg_struct.num_out = arg_struct.num_in;
+		printf("\nbin: %s bout: %s num_in: %s, num_out: %s\n", arg_struct.bin, arg_struct.bout, arg_struct.num_in, arg_struct.num_out);
+		return 0;
+	}
+
 	convBase(&arg_struct);
 
 	printf("\nbin: %s bout: %s num_in: %s, num_out: %s\n", arg_struct.bin, arg_struct.bout, arg_struct.num_in, arg_struct.num_out);
+
+
+	// octal required free
+	if(! strcmp(arg_struct.bout, "o") || strcmp(arg_struct.bout, "octal"))
+		free(arg_struct.num_out);
+	// hexadecimal requires free
+	else if(!strcmp(arg_struct.bout, "h") || strcmp(arg_struct.bout, "hexadecimal"))
+		free(arg_struct.num_out);
+	// binary, similar bases, error input - do not free ( because no alloc )
+
 	return 0;
 }

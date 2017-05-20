@@ -1,0 +1,14 @@
+gcc -g basecnv.c basecnvlib.c -o basecnv -Wall
+
+gdb ./basecnv
+break basecnvlib.h:71
+r -i decimal -o hexadecimal 48879
+run
+(hit breakpoint)
+n (enter)
+print <name> eg. print arg_struct->num_out
+continue
+
+valgrind --leak-check=full ./basecnv -i decimal -o octal 123
+
+shell script to run tests

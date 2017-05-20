@@ -7,13 +7,13 @@
 #include <ctype.h>
 
 struct args* convBase(struct args *arg_struct) {
-	if(!strcmp(arg_struct->bin, "decimal"))
+	if(!strcmp(arg_struct->bin, "decimal") || !strcmp(arg_struct->bin, "d"))
 		decConv(arg_struct);
-	else if(!strcmp(arg_struct->bin, "binary"))
+	else if(!strcmp(arg_struct->bin, "binary") || !strcmp(arg_struct->bin, "b"))
 		binConv(arg_struct);
-	else if(!strcmp(arg_struct->bin, "hexadecimal"))
+	else if(!strcmp(arg_struct->bin, "hexadecimal") || !strcmp(arg_struct->bin, "h"))
 		hexadecConv(arg_struct);
-	else if(!strcmp(arg_struct->bin, "octal"))
+	else if(!strcmp(arg_struct->bin, "octal") || !strcmp(arg_struct->bin, "o"))
 		octConv(arg_struct);
 	
 	return arg_struct;
@@ -24,7 +24,7 @@ struct args* convBase(struct args *arg_struct) {
 struct args* decConv(struct args *arg_struct) {
 	
 	// to binary
-	if(!strcmp(arg_struct->bout, "binary")) {
+	if(!strcmp(arg_struct->bout, "binary") || !strcmp(arg_struct->bout, "b")) {
 		int t = atoi( arg_struct->num_in );
 		
 		if(t == 0) {
@@ -46,18 +46,23 @@ struct args* decConv(struct args *arg_struct) {
 		return arg_struct;
 	}
 
-	else if(!strcmp(arg_struct->bout, "octal")) {
+
+	else if(!strcmp(arg_struct->bout, "octal") || !strcmp(arg_struct->bout, "o")) {
 		int t = atoi( arg_struct->num_in );
-		char *t_cc;
+		char *t_cc = (char *) malloc(1);
+		arg_struct->num_out = malloc(1);
+		
 		while( t != 0 ) {
 			arg_struct->num_out = (char *) realloc(arg_struct->num_out, sizeof(arg_struct->num_out) + 1);
 			t_cc = (char *) realloc(t_cc, sizeof(arg_struct->num_out));	
+			
 			int t_c = t % 8;
 			sprintf(t_cc, "%d", t_c);
 			strcat(arg_struct->num_out, t_cc);
 			t /= 8;
 		}
-		//free(t_cc);
+		free(t_cc);
+		
 		// strrev does not exist in linux string.h
 		arg_struct->num_out = reverseString(arg_struct->num_out);
 		return arg_struct;
@@ -65,18 +70,16 @@ struct args* decConv(struct args *arg_struct) {
 
 
 	// to hexadecimal
-	else if(!strcmp(arg_struct->bout, "hexadecimal")) {
+	else if(!strcmp(arg_struct->bout, "hexadecimal") || !strcmp(arg_struct->bout, "h")) {
 		int t = atoi( arg_struct->num_in );
-		char *t_cc;
+		char *t_cc = (char *) malloc(1);
+		arg_struct->num_out = malloc(1);
+
 		while( t != 0 ) {
 			arg_struct->num_out = (char *) realloc(arg_struct->num_out, sizeof(arg_struct->num_out) + 1);
-			
-			// ### Why is this giving a memory error?
 			t_cc = (char *) realloc(t_cc, sizeof(arg_struct->num_out));	
-			// ######################################
 			
 			int t_c = t % 16;
-			printf("%d\n", t_c);
 			if( t_c <= 9 ) {
 				sprintf(t_cc, "%d", t_c);
 			}
@@ -90,18 +93,32 @@ struct args* decConv(struct args *arg_struct) {
 					case 14: temp_h = 'E'; break;
 					case 15: temp_h = 'F'; break;
 				}
-				sprintf(t_cc, "%d", sprintf(t_cc, "%d", t_c));
+				sprintf(t_cc, "%c", temp_h);
 			}
 
 			strcat(arg_struct->num_out,  t_cc);
 			t /= 16;
 		}
+		free(t_cc);
+
 		// strrev does not exist in linux string.h
 		arg_struct->num_out = reverseString(arg_struct->num_out);
 		return arg_struct;
 	}
+	
+	else if(!strcmp(arg_struct->bout, "decimal") || !strcmp(arg_struct->bout, "d")) {
+		arg_struct->num_out = arg_struct->num_in;
+		return arg_struct;
+	}
 
-	return arg_struct;
+	else {
+		printf("\nBase conversion\nUsage:\n");
+		printf("-i: input base\n-o: output base\ninput number\n");
+		printf("Bases supported: decimal | d, binary | b, octal | o, hexadecimal | h\n");
+		printf("eg. basecnv -i decimal -o octal 10\n\n");
+		exit(-1);
+	}
+
 }
 
 

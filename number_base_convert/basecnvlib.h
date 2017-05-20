@@ -13,5 +13,6 @@ struct args* decConv(struct args*);
 struct args* binConv(struct args*);
 struct args* hexadecConv(struct args*);
 struct args* octConv(struct args*);
+char* reverseString(char*);
 
 #endif
